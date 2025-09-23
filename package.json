@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-qrscanner-autofocus",
-  "version": "3.0.11",
+  "version": "3.0.13",
   "description": "Fast, energy-efficient, highly-configurable QR code scanner.",
   "cordova": {
     "id": "cordova-plugin-qrscanner-autofocus",
