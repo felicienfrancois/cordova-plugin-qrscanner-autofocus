@@ -1,8 +1,10 @@
-[![Build Status](https://travis-ci.org/bitpay/cordova-plugin-qrscanner.svg?branch=master)](https://travis-ci.org/bitpay/cordova-plugin-qrscanner) [![npm](https://img.shields.io/npm/v/cordova-plugin-qrscanner.svg)](https://www.npmjs.com/package/cordova-plugin-qrscanner-12) [![npm](https://img.shields.io/npm/dm/cordova-plugin-qrscanner.svg)](https://www.npmjs.com/package/cordova-plugin-qrscanner-12)
-[![Dependency Status](https://david-dm.org/bitpay/cordova-plugin-qrscanner.svg)](https://david-dm.org/bitpay/cordova-plugin-qrscanner)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![npm](https://img.shields.io/npm/v/cordova-plugin-qrscanner-autofocus.svg)](https://www.npmjs.com/package/cordova-plugin-qrscanner-autofocus) [![npm](https://img.shields.io/npm/dm/cordova-plugin-qrscanner-autofocus.svg)](https://www.npmjs.com/package/cordova-plugin-qrscanner-autofocus)
 
-Fixes error: 'openSettingsURLString' has been renamed to 'UIApplicationOpenSettingsURLString'
+- Fixes error: 'openSettingsURLString' has been renamed to 'UIApplicationOpenSettingsURLString'
+- make compatible to Gradle 7
+- Upgraded packages
+- [New on this fork] Simplified build
+- [New on this fork] Improved autofocus by turning on following features : continuousFocus, exposure, metering, barcodeSceneMode
 
 # cordova-plugin-qrscanner
 A fast, energy efficient, highly-configurable QR code scanner for Cordova apps – available for the iOS, Android, Windows, and browser platforms.
