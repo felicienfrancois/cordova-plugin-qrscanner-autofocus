@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import AVFoundation
+import WebKit
 
 @objc(QRScanner)
 class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
@@ -221,7 +222,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
     @objc func makeOpaque(){
         self.webView?.isOpaque = true
         self.webView?.backgroundColor = .white
-        self.webView?.scrollView.backgroundColor = .white
+        (self.webView as? WKWebView)?.scrollView.backgroundColor = .white
     }
 
     @objc func boolToNumberString(bool: Bool) -> String{
@@ -313,7 +314,7 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
     @objc func show(_ command: CDVInvokedUrlCommand) {
         self.webView?.isOpaque = false
         self.webView?.backgroundColor = .clear
-        self.webView?.scrollView.backgroundColor = .clear
+        (self.webView as? WKWebView)?.scrollView.backgroundColor = .clear
         self.getStatus(command)
     }
 
