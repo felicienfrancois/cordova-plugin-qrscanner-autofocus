@@ -34,7 +34,8 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
             // Obtain the current interface orientation in a modern, safe way
             var ifaceOrientation = UIInterfaceOrientation.portrait
             if #available(iOS 13.0, *) {
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                let activeScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) ?? UIApplication.shared.connectedScenes.first
+                if let scene = activeScene as? UIWindowScene {
                     ifaceOrientation = scene.interfaceOrientation
                 }
             } else {
@@ -117,6 +118,16 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 
+    func runOnMain(_ block: @escaping () -> Void) {
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.sync {
+                block()
+            }
+        }
+    }
+
     @objc func prepScanner(command: CDVInvokedUrlCommand) -> Bool{
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         if status == .restricted {
@@ -128,9 +139,11 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
         }
         do {
             if (captureSession?.isRunning != true){
-                cameraView.backgroundColor = .clear
-                if let web = self.webView, let superview = web.superview {
-                    superview.insertSubview(cameraView, belowSubview: web)
+                self.runOnMain {
+                    self.cameraView.backgroundColor = .clear
+                    if let web = self.webView, let superview = web.superview {
+                        superview.insertSubview(self.cameraView, belowSubview: web)
+                    }
                 }
                 let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .unspecified)
                 let cameras = session.devices
@@ -161,8 +174,11 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
                         metaOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
                         metaOutput.metadataObjectTypes = [.qr]
                     }
-                    captureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                    cameraView.addPreviewLayer(captureVideoPreviewLayer)
+                    let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                    self.captureVideoPreviewLayer = previewLayer
+                    self.runOnMain {
+                        self.cameraView.addPreviewLayer(previewLayer)
+                    }
                     captureSession.startRunning()
                 }
             }
@@ -386,8 +402,10 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
         if self.captureSession != nil {
             backgroundThread(delay: 0, background: {
                 self.captureSession!.stopRunning()
-                self.cameraView.removePreviewLayer()
-                self.captureVideoPreviewLayer = nil
+                DispatchQueue.main.async {
+                    self.cameraView.removePreviewLayer()
+                    self.captureVideoPreviewLayer = nil
+                }
                 self.metaOutput = nil
                 self.captureSession = nil
                 self.currentCamera = 0
